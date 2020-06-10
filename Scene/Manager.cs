@@ -20,6 +20,8 @@ namespace AdelieEngine.Scene
 
         public Sprite.AnimationSprite CurrentTransition;
 
+        public Canvas.Canvas TransitionCanvas;
+
         private bool Switching = false;
 
         public Manager()
@@ -43,14 +45,61 @@ namespace AdelieEngine.Scene
 
         public void SwitchTo(Scene next, Sprite.AnimationSprite transition)
         {
-            this.NextScene = next;
-            this.CurrentTransition = transition;
-            this.Switching = true;
+            if (!this.Switching)
+            {
+                this.NextScene = next;
+                this.CurrentTransition = transition;
+                this.CurrentTransition.FrameCurrent = this.CurrentTransition.FrameStart;
+                this.CurrentTransition.Playing = true;
+                this.Switching = true;
+            }
         }
 
-        public void Update(float dt)
+        public void Update(Game game, GraphicsDeviceManager graphics, float deltaTime)
         {
+            //Update transition
+            if (this.Switching)
+            {
+                this.CurrentTransition.Update(deltaTime);
+                if (this.CurrentTransition.FrameCurrent == (int)(this.CurrentTransition.FrameEnd / 2))
+                {
+                    this.CurrentScene = this.NextScene;
+                }
+                else if (this.CurrentTransition.FrameCurrent == this.CurrentTransition.FrameEnd)
+                {
+                    this.Switching = false;
+                }
+            }
 
+            //Update current screen
+            if (this.CurrentScene != null)
+            {
+                this.CurrentScene.Update(game, graphics, deltaTime);
+            }
+        }
+
+        public void Draw(Game game, GraphicsDeviceManager graphics, SpriteBatch spriteBatch)
+        {
+            //Draw current screen
+            if (this.CurrentScene != null)
+            {
+                this.CurrentScene.Draw(game, graphics, spriteBatch);
+            }
+
+            //Draw transition
+            if (this.Switching)
+            {
+                game.GraphicsDevice.SetRenderTarget(this.TransitionCanvas.RenderTarget);
+                game.GraphicsDevice.Clear(Color.Transparent);
+                spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointClamp, null, null, null);
+                if (this.CurrentTransition != null)
+                {
+                    this.CurrentTransition.Draw(spriteBatch);
+                }
+                spriteBatch.End();
+                game.GraphicsDevice.SetRenderTarget(null);
+            }
+           
         }
     }
 }

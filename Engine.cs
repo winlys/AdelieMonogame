@@ -85,6 +85,7 @@ namespace AdelieEngine
             game.IsFixedTimeStep = true;
 
             this.RenderTarget = new RenderTarget2D(game.GraphicsDevice, this.Width, this.Height, false, SurfaceFormat.Color, DepthFormat.None);
+            this.SceneManager.TransitionCanvas = new Canvas.Canvas(game.GraphicsDevice, 1920, 1080, false);
 
             Engine.WhiteBox = new Texture2D(game.GraphicsDevice, 1, 1);
             Color[] data = new Color[1];
@@ -156,10 +157,7 @@ namespace AdelieEngine
             this.RenderTargetRectangle.Height = (int)(this.Height * Scale);
 
             //Scene
-            if (this.SceneManager.CurrentScene != null)
-            {
-                this.SceneManager.CurrentScene.Update(game, graphics, gameTime);
-            }
+            this.SceneManager.Update(game, graphics, this.DeltaTime);
 
         }
 
@@ -169,24 +167,26 @@ namespace AdelieEngine
             game.GraphicsDevice.Clear(Color.Transparent);
 
             //Scene
-            if (this.SceneManager.CurrentScene != null)
-            {
-                this.SceneManager.CurrentScene.Draw(game, graphics, spriteBatch);
-            }
+            this.SceneManager.Draw(game, graphics, spriteBatch);
 
+            //Draw all to the main render target
             game.GraphicsDevice.SetRenderTarget(this.RenderTarget);
-            game.GraphicsDevice.Clear(Color.Transparent);
-            //Draw scene canvases
-            spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointClamp, null, null, null);
-            //spriteBatch.Draw(this.WhiteBox, new Rectangle(100, 100, 100, 100), Color.White);
-            if (this.SceneManager.CurrentScene != null)
-            {
-                for (int i = 0; i < this.SceneManager.CurrentScene.Canvases.Count; i++)
-                {
-                    spriteBatch.Draw(this.SceneManager.CurrentScene.Canvases[i].RenderTarget, this.Rectangle, Color.White);
-                }
-            }
-            spriteBatch.End();
+                game.GraphicsDevice.Clear(Color.Transparent);
+                spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointClamp, null, null, null);
+
+                    //Draw scenes
+                    if (this.SceneManager.CurrentScene != null)
+                    {
+                        for (int i = 0; i < this.SceneManager.CurrentScene.Canvases.Count; i++)
+                        {
+                            spriteBatch.Draw(this.SceneManager.CurrentScene.Canvases[i].RenderTarget, this.Rectangle, Color.White);
+                        }
+                    }
+
+                    //Draw transitions
+
+
+                spriteBatch.End();
             game.GraphicsDevice.SetRenderTarget(null);
 
             spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointClamp, null, null, null);

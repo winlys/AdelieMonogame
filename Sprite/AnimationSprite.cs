@@ -17,7 +17,7 @@ namespace AdelieEngine.Sprite
         public int FrameCount;
 
         private float TimeCounter = 0;
-        public float TimePerFrame = 0.1f;
+        public float TimePerFrame = 0.01f;
 
         public bool Playing = true;
 

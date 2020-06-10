@@ -28,7 +28,7 @@ namespace AdelieEngine.Scene
 
         public virtual void LoadContent(Game game, GraphicsDeviceManager graphics)
         {
-
+            
         }
 
         public virtual void UnloadContent(Game game, GraphicsDeviceManager graphics)
@@ -36,7 +36,7 @@ namespace AdelieEngine.Scene
 
         }
 
-        public virtual void Update(Game game, GraphicsDeviceManager graphics, GameTime gameTime)
+        public virtual void Update(Game game, GraphicsDeviceManager graphics, float deltaTime)
         {
             
         }

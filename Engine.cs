@@ -10,48 +10,36 @@ using Microsoft.Xna.Framework.Content;
 
 namespace AdelieEngine
 {
-    public class Engine
+    public static class Engine
     {
 
         //Title
-        public string Title;
+        public static string Title = "Adelie";
 
         //Screen size
-        public int Width;
-        public int Height;
-        public int WindowWidth;
-        public int WindowHeight;
-        public Rectangle Rectangle;
+        public static int Width = 1920;
+        public static int Height = 1080;
+        public static int WindowWidth = 960;
+        public static int WindowHeight = 540;
+        public static Rectangle Rectangle = new Rectangle(0, 0, Engine.Width, Engine.Height);
 
         //Time
-        public float DeltaTime;
-        public float DeltaTimeRaw;
-        public float DeltaTimeRate = 1.0f;
-        public float FPS;
+        public static float DeltaTime;
+        public static float DeltaTimeRaw;
+        public static float DeltaTimeRate = 1.0f;
+        public static float FPS;
 
         //Graphic
-        private Rectangle RenderTargetRectangle;
-        private RenderTarget2D RenderTarget;
+        private static Rectangle RenderTargetRectangle;
+        private static RenderTarget2D RenderTarget;
         public static Texture2D WhiteBox;
+        public static bool Fullscreen = false;
 
-        //Input
-        public Input.Manager InputManager;
-
-        //Scene
-        public Scene.Manager SceneManager;
-
-        public Engine(Game game, GraphicsDeviceManager graphics, int width, int height, int windowwidth, int windowheight, string title, bool fullscreen)
+        public static void Initialize(Game game, GraphicsDeviceManager graphics)
         {
-            //Size
-            this.Width = width;
-            this.Height = height;
-            this.WindowWidth = windowwidth;
-            this.WindowHeight = windowheight;
-            this.Rectangle = new Rectangle(0, 0, width, height);
-
             game.Window.AllowUserResizing = true;
 
-            if (fullscreen)
+            if (Engine.Fullscreen)
             {
                 graphics.PreferredBackBufferWidth = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Width;
                 graphics.PreferredBackBufferHeight = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Height;
@@ -59,19 +47,10 @@ namespace AdelieEngine
             }
             else
             {
-                graphics.PreferredBackBufferWidth = this.WindowWidth;
-                graphics.PreferredBackBufferHeight = this.WindowHeight;
+                graphics.PreferredBackBufferWidth = Engine.WindowWidth;
+                graphics.PreferredBackBufferHeight = Engine.WindowHeight;
                 graphics.IsFullScreen = false;
             }
-
-            //Title
-            this.Title = game.Window.Title = title;
-
-            //Input
-            this.InputManager = new Input.Manager();
-
-            //Scene
-            this.SceneManager = new Scene.Manager();
 
             //Graphics setting
             graphics.SynchronizeWithVerticalRetrace = true;
@@ -84,45 +63,34 @@ namespace AdelieEngine
             game.IsMouseVisible = true;
             game.IsFixedTimeStep = true;
 
-            this.RenderTarget = new RenderTarget2D(game.GraphicsDevice, this.Width, this.Height, false, SurfaceFormat.Color, DepthFormat.None);
+            Engine.RenderTarget = new RenderTarget2D(game.GraphicsDevice, Engine.Width, Engine.Height, false, SurfaceFormat.Color, DepthFormat.None);
 
             Engine.WhiteBox = new Texture2D(game.GraphicsDevice, 1, 1);
             Color[] data = new Color[1];
             data[0] = Color.White;
             Engine.WhiteBox.SetData<Color>(data);
+
+            //Initialize Scene
+            Scene.SceneManager.Initialize(game, graphics);
         }
 
-        public virtual void Initialize(Game game, GraphicsDeviceManager graphics)
+        public static void LoadContent(Game game, GraphicsDeviceManager graphics)
         {
-            for (int i = 0; i < SceneManager.Scenes.Count; i++)
-            {
-                SceneManager.Scenes[i].Initialize(game, graphics);
-            }
+            Scene.SceneManager.LoadContent(game, graphics);
         }
 
-        public virtual void LoadContent(Game game, GraphicsDeviceManager graphics)
+        public static void UnloadContent(Game game, GraphicsDeviceManager graphics)
         {
-            for (int i = 0; i < SceneManager.Scenes.Count; i++)
-            {
-                SceneManager.Scenes[i].LoadContent(game, graphics);
-            }
+            Scene.SceneManager.UnloadContent(game, graphics);
         }
 
-        public virtual void UnloadContent(Game game, GraphicsDeviceManager graphics)
+        public static void Update(Game game, GraphicsDeviceManager graphics, GameTime gameTime)
         {
-            for (int i = 0; i < SceneManager.Scenes.Count; i++)
-            {
-                SceneManager.Scenes[i].UnloadContent(game, graphics);
-            }
-        }
-
-        public virtual void Update(Game game, GraphicsDeviceManager graphics, GameTime gameTime)
-        {
-            this.DeltaTimeRaw = (float)gameTime.ElapsedGameTime.TotalSeconds;
-            this.DeltaTime = this.DeltaTimeRaw * this.DeltaTimeRate;
+            Engine.DeltaTimeRaw = (float)gameTime.ElapsedGameTime.TotalSeconds;
+            Engine.DeltaTime = Engine.DeltaTimeRaw * Engine.DeltaTimeRate;
 
             //Toggle fullscreen for testing       Will delete later
-            if (this.InputManager.F.JustDown())
+            if (Input.InputManager.F.JustDown())
             {
                 if (graphics.IsFullScreen)
                 {
@@ -142,55 +110,57 @@ namespace AdelieEngine
 
             //Update main rendertarget or viewport
             float Scale = 0f;
-            if ((float)game.GraphicsDevice.Viewport.Width / (float)this.Width >= (float)game.GraphicsDevice.Viewport.Height / (float)this.Height)
+            if ((float)game.GraphicsDevice.Viewport.Width / (float)Engine.Width >= (float)game.GraphicsDevice.Viewport.Height / (float)Engine.Height)
             {
-                Scale = (float)game.GraphicsDevice.Viewport.Height / (float)this.Height;
+                Scale = (float)game.GraphicsDevice.Viewport.Height / (float)Engine.Height;
             }
             else
             {
-                Scale = (float)game.GraphicsDevice.Viewport.Width / (float)this.Width;
+                Scale = (float)game.GraphicsDevice.Viewport.Width / (float)Engine.Width;
             }
-            this.RenderTargetRectangle.X = (int)Math.Floor((float)(game.GraphicsDevice.Viewport.Width - this.Width * Scale) / 2);
-            this.RenderTargetRectangle.Y = (int)Math.Floor((float)(game.GraphicsDevice.Viewport.Height - this.Height * Scale) / 2);
-            this.RenderTargetRectangle.Width = (int)(this.Width * Scale);
-            this.RenderTargetRectangle.Height = (int)(this.Height * Scale);
+            Engine.RenderTargetRectangle.X = (int)Math.Floor((float)(game.GraphicsDevice.Viewport.Width - Engine.Width * Scale) / 2);
+            Engine.RenderTargetRectangle.Y = (int)Math.Floor((float)(game.GraphicsDevice.Viewport.Height - Engine.Height * Scale) / 2);
+            Engine.RenderTargetRectangle.Width = (int)(Engine.Width * Scale);
+            Engine.RenderTargetRectangle.Height = (int)(Engine.Height * Scale);
 
             //Scene
-            if (this.SceneManager.CurrentScene != null)
-            {
-                this.SceneManager.CurrentScene.Update(game, graphics, gameTime);
-            }
+            Scene.SceneManager.Update(game, graphics, Engine.DeltaTime);
 
         }
 
-        public virtual void Draw(Game game, GraphicsDeviceManager graphics, SpriteBatch spriteBatch)
+        public static void Draw(Game game, GraphicsDeviceManager graphics, SpriteBatch spriteBatch)
         {
             game.GraphicsDevice.SetRenderTarget(null);
             game.GraphicsDevice.Clear(Color.Transparent);
 
             //Scene
-            if (this.SceneManager.CurrentScene != null)
-            {
-                this.SceneManager.CurrentScene.Draw(game, graphics, spriteBatch);
-            }
+            Scene.SceneManager.Draw(game, graphics, spriteBatch);
 
-            game.GraphicsDevice.SetRenderTarget(this.RenderTarget);
+            //Draw all to the main render target
+            game.GraphicsDevice.SetRenderTarget(Engine.RenderTarget);
             game.GraphicsDevice.Clear(Color.Transparent);
-            //Draw scene canvases
             spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointClamp, null, null, null);
-            //spriteBatch.Draw(this.WhiteBox, new Rectangle(100, 100, 100, 100), Color.White);
-            if (this.SceneManager.CurrentScene != null)
+
+            //Draw scenes
+            if (Scene.SceneManager.CurrentScene != null)
             {
-                for (int i = 0; i < this.SceneManager.CurrentScene.Canvases.Count; i++)
+                for (int i = 0; i < Scene.SceneManager.CurrentScene.Canvases.Count; i++)
                 {
-                    spriteBatch.Draw(this.SceneManager.CurrentScene.Canvases[i].RenderTarget, this.Rectangle, Color.White);
+                    spriteBatch.Draw(Scene.SceneManager.CurrentScene.Canvases[i].RenderTarget, Engine.Rectangle, Color.White);
                 }
             }
+
+            //Draw transitions
+            if (Scene.SceneManager.Switching)
+            {
+                spriteBatch.Draw(Scene.SceneManager.TransitionCanvas.RenderTarget, Engine.Rectangle, Color.White);
+            }
+
             spriteBatch.End();
             game.GraphicsDevice.SetRenderTarget(null);
 
             spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointClamp, null, null, null);
-            spriteBatch.Draw(this.RenderTarget, this.RenderTargetRectangle, Color.White);
+            spriteBatch.Draw(Engine.RenderTarget, Engine.RenderTargetRectangle, Color.White);
             spriteBatch.End();
         }
     }

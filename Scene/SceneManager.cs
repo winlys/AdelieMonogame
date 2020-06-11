@@ -13,7 +13,7 @@ namespace AdelieEngine.Scene
     public static class SceneManager
     {
         public static List<Scene> Scenes = new List<Scene>();
-        public static List<Sprite.AnimationSprite> Transitions;
+        public static List<Sprite.AnimationSprite> Transitions = new List<Sprite.AnimationSprite>();
 
         public static Scene CurrentScene;
         public static Scene NextScene;
@@ -50,10 +50,7 @@ namespace AdelieEngine.Scene
 
         public static void Initialize(Game game, GraphicsDeviceManager graphics)
         {
-            SceneManager.Scenes.Add(new Scene("Default"));
-            SceneManager.CurrentScene = SceneManager.Scenes[0];
-
-            SceneManager.TransitionCanvas = new Canvas.Canvas(game.GraphicsDevice, 1920, 1080, false);
+            SceneManager.TransitionCanvas = new Canvas.Canvas(game.GraphicsDevice, Engine.Width, Engine.Height, false);
 
             //Initialize scenes
             for (int i = 0; i < SceneManager.Scenes.Count; i++)
@@ -90,7 +87,7 @@ namespace AdelieEngine.Scene
                 {
                     SceneManager.CurrentScene = SceneManager.NextScene;
                 }
-                else if (SceneManager.CurrentTransition.FrameCurrent == SceneManager.CurrentTransition.FrameEnd)
+                else if (SceneManager.CurrentTransition.FrameCurrent >= SceneManager.CurrentTransition.FrameEnd)
                 {
                     SceneManager.Switching = false;
                 }

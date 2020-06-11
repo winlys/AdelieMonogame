@@ -52,7 +52,7 @@ namespace AdelieEngine.Sprite
                 {
                     this.TimeCounter = 0;
                     this.FrameCurrent++;
-                    if (this.FrameCurrent >= this.FrameEnd)
+                    if (this.FrameCurrent > this.FrameEnd)
                     {
                         this.FrameCurrent = this.FrameStart;
                     }

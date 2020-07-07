@@ -14,12 +14,34 @@ namespace AdelieEngine.Canvas
     {
         public int Width, Height;
         public RenderTarget2D RenderTarget;
+        public bool Pixel;
+        public SamplerState SamplerState;
+        public Camera.Camera Camera;
 
         public Canvas(GraphicsDevice graphics, int width, int height, bool pixel)
         {
             this.Width = width;
             this.Height = height;
+            this.Pixel = pixel;
+            if (this.Pixel)
+            {
+                this.SamplerState = SamplerState.PointClamp;
+            }
+            else
+            {
+                this.SamplerState = SamplerState.LinearClamp;
+            }
             this.RenderTarget = new RenderTarget2D(graphics, this.Width, this.Height, !pixel, SurfaceFormat.Color, DepthFormat.None);
+        }
+
+        public void Begin(Game game)
+        {
+            game.GraphicsDevice.SetRenderTarget(this.RenderTarget);
+        }
+
+        public void End(Game game)
+        {
+            game.GraphicsDevice.SetRenderTarget(null);
         }
     }
 }

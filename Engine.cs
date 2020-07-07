@@ -38,6 +38,7 @@ namespace AdelieEngine
         public static void Initialize(Game game, GraphicsDeviceManager graphics)
         {
             game.Window.AllowUserResizing = true;
+            game.Window.Title = Engine.Title;
 
             if (Engine.Fullscreen)
             {
@@ -70,6 +71,8 @@ namespace AdelieEngine
             data[0] = Color.White;
             Engine.WhiteBox.SetData<Color>(data);
 
+            Engine.Rectangle = new Rectangle(0, 0, Engine.Width, Engine.Height);
+
             //Initialize Scene
             Scene.SceneManager.Initialize(game, graphics);
         }
@@ -81,6 +84,7 @@ namespace AdelieEngine
 
         public static void UnloadContent(Game game, GraphicsDeviceManager graphics)
         {
+            Engine.WhiteBox.Dispose();
             Scene.SceneManager.UnloadContent(game, graphics);
         }
 
@@ -136,32 +140,25 @@ namespace AdelieEngine
             //Scene
             Scene.SceneManager.Draw(game, graphics, spriteBatch);
 
-            //Draw all to the main render target
-            game.GraphicsDevice.SetRenderTarget(Engine.RenderTarget);
-            game.GraphicsDevice.Clear(Color.Transparent);
-            spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointClamp, null, null, null);
-
             //Draw scenes
             if (Scene.SceneManager.CurrentScene != null)
             {
+                //Draw all the canvas/rendertarget of the current scene
                 for (int i = 0; i < Scene.SceneManager.CurrentScene.Canvases.Count; i++)
                 {
-                    spriteBatch.Draw(Scene.SceneManager.CurrentScene.Canvases[i].RenderTarget, Engine.Rectangle, Color.White);
+                    spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, Scene.SceneManager.CurrentScene.Canvases[i].SamplerState, null, null, null);
+                    spriteBatch.Draw(Scene.SceneManager.CurrentScene.Canvases[i].RenderTarget, Engine.RenderTargetRectangle, Color.White);
+                    spriteBatch.End();
                 }
             }
 
             //Draw transitions
             if (Scene.SceneManager.Switching)
             {
-                spriteBatch.Draw(Scene.SceneManager.TransitionCanvas.RenderTarget, Engine.Rectangle, Color.White);
+                spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointWrap, null, null, null);
+                spriteBatch.Draw(Scene.SceneManager.TransitionCanvas.RenderTarget, Engine.RenderTargetRectangle, Color.White);
+                spriteBatch.End();
             }
-
-            spriteBatch.End();
-            game.GraphicsDevice.SetRenderTarget(null);
-
-            spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointClamp, null, null, null);
-            spriteBatch.Draw(Engine.RenderTarget, Engine.RenderTargetRectangle, Color.White);
-            spriteBatch.End();
         }
     }
 }

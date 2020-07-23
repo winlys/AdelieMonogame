@@ -32,6 +32,7 @@ namespace AdelieEngine.Canvas
                 this.SamplerState = SamplerState.LinearClamp;
             }
             this.RenderTarget = new RenderTarget2D(graphics, this.Width, this.Height, !pixel, SurfaceFormat.Color, DepthFormat.None);
+            this.Camera = new Camera.Camera(this);
         }
 
         public void Begin(Game game)

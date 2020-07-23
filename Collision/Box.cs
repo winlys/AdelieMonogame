@@ -13,6 +13,8 @@ namespace AdelieEngine.Collision
     public class Box
     {
         public float X, Y, Width, Height;
+        public bool Showing = false;
+        public bool IsActive = true;
 
         public Box(float x, float y, float width, float height)
         {
@@ -50,6 +52,14 @@ namespace AdelieEngine.Collision
         public bool IsColliding(float x, float y, float width, float height)
         {
             return this.IsCollidingHorizontally(x, width) && this.IsCollidingVertically(y, height);
+        }
+
+        public void Draw(SpriteBatch spriteBatch, Canvas.Canvas canvas)
+        {
+            if (this.Showing)
+            {
+                Graphic.Draw.Rectangle(spriteBatch, canvas, this.X, this.Y, this.Width, this.Height, false);
+            }
         }
     }
 }

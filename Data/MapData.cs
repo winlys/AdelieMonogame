@@ -12,6 +12,7 @@ namespace AdelieEngine.Data
         public float Height;
         public float BlockSize;
         public List<int[]> Rooms;
+        //public Dictionary<string, int[]> Entities;
         public int[] BlockData;
     }
 }

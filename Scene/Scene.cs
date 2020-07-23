@@ -13,12 +13,12 @@ namespace AdelieEngine.Scene
     public class Scene
     {
         public string Name;
-        public List<Canvas.Canvas> Canvases;
+        public List<Canvas.Canvas> Canvases = new List<Canvas.Canvas>();
+        public List<Entity.Entity> Entities = new List<Entity.Entity>();
 
         public Scene(string name)
         {
             this.Name = name;
-            this.Canvases = new List<Canvas.Canvas>();
         }
 
         public virtual void Initialize(Game game, GraphicsDeviceManager graphics)

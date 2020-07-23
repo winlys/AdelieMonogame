@@ -21,9 +21,13 @@ namespace AdelieEngine.Entity
 
         public Data.Data Data;
 
+        public string Type = "Entity";
+
         public Entity(Data.Data data)
         {
             this.Data = data;
+            this.Box = new Collision.Box(0, 0, 0, 0);
+            this.Sprite = new Sprite.Sprite();
         }
 
         public Entity(float x, float y, Sprite.Sprite sprite)
@@ -61,9 +65,27 @@ namespace AdelieEngine.Entity
             this.Sprite.Update(dt);
         }
 
-        public virtual void Draw(SpriteBatch spriteBatch)
+        public virtual void Draw(SpriteBatch spriteBatch, Canvas.Canvas canvas)
         {
-            this.Sprite.Draw(spriteBatch);
+            //this.Box.Showing = true;
+            this.Sprite.Draw(spriteBatch, canvas);
+            this.Box.Draw(spriteBatch, canvas);
+        }
+
+
+        public virtual void ShowCollisionBox()
+        {
+            this.Box.Showing = true;
+        }
+
+        public virtual void HideCollisionBox()
+        {
+            this.Box.Showing = false;
+        }
+
+        public virtual void ToggleCollisionBox()
+        {
+            this.Box.Showing = !this.Box.Showing;
         }
     }
 }

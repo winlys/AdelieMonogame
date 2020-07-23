@@ -26,6 +26,8 @@ namespace AdelieEngine.Entity.Map
             this.Box = new Collision.Box(x, y, width, height);
             this.QuadId = id;
             this.Rectangle = new Rectangle((int)x, (int)y, (int)width, (int)height);
+
+            this.Box.Showing = false;
         }
 
         public void Update(float dt)
@@ -33,9 +35,15 @@ namespace AdelieEngine.Entity.Map
             
         }
 
-        public void Draw(SpriteBatch spriteBatch, Map map)
+        public void Draw(SpriteBatch spriteBatch, Canvas.Canvas canvas, Map map)
         {
+            this.Rectangle.X = (int)Math.Floor((this.X - canvas.Camera.X) * canvas.Width / canvas.Camera.Width);
+            this.Rectangle.Y = (int)Math.Floor((this.Y - canvas.Camera.Y) * canvas.Height / canvas.Camera.Height);
+            this.Rectangle.Width = (int)Math.Floor((this.X + map.Data.BlockSize - canvas.Camera.X) * canvas.Width / canvas.Camera.Width) - this.Rectangle.X;
+            this.Rectangle.Height = (int)Math.Floor((this.Y + map.Data.BlockSize - canvas.Camera.Y) * canvas.Height / canvas.Camera.Height) - this.Rectangle.Y;
+
             spriteBatch.Draw(map.TileSet, this.Rectangle, map.Quads[this.QuadId], Color.White);
+            this.Box.Draw(spriteBatch, canvas);
         }
     }
 }

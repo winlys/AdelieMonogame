@@ -32,9 +32,9 @@ namespace AdelieEngine.Sprite
             this.Rectangle.Y = (int)this.Position.Y + (int)this.Offset.Y;
         }
 
-        public virtual void Draw(SpriteBatch spriteBatch)
+        public virtual void Draw(SpriteBatch spriteBatch, Canvas.Canvas canvas)
         {
-
+            
         }
     }
 }

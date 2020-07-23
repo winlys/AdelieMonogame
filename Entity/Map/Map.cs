@@ -21,6 +21,8 @@ namespace AdelieEngine.Entity.Map
 
         public Map(Data.MapData data, Texture2D tileset) : base(data)
         {
+            this.Type = "Map";
+
             this.Data = data;
             this.TileSet = tileset;
 
@@ -46,13 +48,46 @@ namespace AdelieEngine.Entity.Map
             //base.Update(dt);
         }
 
-        public override void Draw(SpriteBatch spriteBatch)
+        public override void Draw(SpriteBatch spriteBatch, Canvas.Canvas canvas)
         {
             for (int i = 0; i < this.Rooms.Count; i++)
             {
-                this.Rooms[i].Draw(spriteBatch, this);
+                this.Rooms[i].Draw(spriteBatch, canvas, this);
             }
             //base.Draw(spriteBatch);
+        }
+
+        public override void ShowCollisionBox()
+        {
+            for (int i = 0; i < this.Rooms.Count; i++)
+            {
+                for (int j = 0; j < this.Rooms[i].Statics.Count; j++)
+                {
+                    this.Rooms[i].Statics[j].Box.Showing = true;
+                }
+            }
+        }
+
+        public override void HideCollisionBox()
+        {
+            for (int i = 0; i < this.Rooms.Count; i++)
+            {
+                for (int j = 0; j < this.Rooms[i].Statics.Count; j++)
+                {
+                    this.Rooms[i].Statics[j].Box.Showing = false;
+                }
+            }
+        }
+
+        public override void ToggleCollisionBox()
+        {
+            for (int i = 0; i < this.Rooms.Count; i++)
+            {
+                for (int j = 0; j < this.Rooms[i].Statics.Count; j++)
+                {
+                    this.Rooms[i].Statics[j].Box.Showing = !this.Rooms[i].Statics[j].Box.Showing;
+                }
+            }
         }
     }
 }

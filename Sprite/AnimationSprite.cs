@@ -69,10 +69,17 @@ namespace AdelieEngine.Sprite
             this.Rectangle.Height = (int)(this.Texture.Height * this.Scale.Y);
         }
 
-        public override void Draw(SpriteBatch spriteBatch)
+        public override void Draw(SpriteBatch spriteBatch, Canvas.Canvas canvas)
         {
+            this.Rectangle.X = (int)Math.Floor((this.Position.X + this.Offset.X - canvas.Camera.X) * canvas.Width / canvas.Camera.Width);
+            this.Rectangle.Y = (int)Math.Floor((this.Position.Y + this.Offset.Y - canvas.Camera.Y) * canvas.Height / canvas.Camera.Height);
+            //this.Rectangle.Width = (int)Math.Floor(this.FrameWidth * this.Scale.X * canvas.Width / canvas.Camera.Width);
+            //this.Rectangle.Height = (int)Math.Floor(this.Texture.Height * this.Scale.Y * canvas.Height / canvas.Camera.Height);
+            this.Rectangle.Width = (int)Math.Floor((this.Position.X + this.Offset.X + this.FrameWidth * this.Scale.X - canvas.Camera.X) * canvas.Width / canvas.Camera.Width) - this.Rectangle.X;
+            this.Rectangle.Height = (int)Math.Floor((this.Position.Y + this.Offset.Y + this.Texture.Height * this.Scale.Y - canvas.Camera.Y) * canvas.Height / canvas.Camera.Height) - this.Rectangle.Y;
+
             spriteBatch.Draw(this.Texture, this.Rectangle, this.Quads[this.FrameCurrent], this.Color);
-            base.Draw(spriteBatch);
+            base.Draw(spriteBatch, canvas);
         }
     }
 }

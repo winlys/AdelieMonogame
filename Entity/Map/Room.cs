@@ -46,11 +46,11 @@ namespace AdelieEngine.Entity.Map
 
         }
 
-        public void Draw(SpriteBatch spriteBatch, Map map)
+        public void Draw(SpriteBatch spriteBatch, Canvas.Canvas canvas, Map map)
         {
             for (int i = 0; i < this.Statics.Count; i++)
             {
-                this.Statics[i].Draw(spriteBatch, map);
+                this.Statics[i].Draw(spriteBatch, canvas, map);
             }
         }
     }

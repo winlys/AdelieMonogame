@@ -116,7 +116,7 @@ namespace AdelieEngine.Scene
                 spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointClamp, null, null, null);
                 if (SceneManager.CurrentTransition != null)
                 {
-                    SceneManager.CurrentTransition.Draw(spriteBatch);
+                    SceneManager.CurrentTransition.Draw(spriteBatch, SceneManager.TransitionCanvas);
                 }
                 spriteBatch.End();
                 game.GraphicsDevice.SetRenderTarget(null);

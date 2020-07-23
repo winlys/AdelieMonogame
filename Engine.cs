@@ -32,7 +32,7 @@ namespace AdelieEngine
         //Graphic
         private static Rectangle RenderTargetRectangle;
         private static RenderTarget2D RenderTarget;
-        public static Texture2D WhiteBox;
+        //public static Texture2D WhiteBox;
         public static bool Fullscreen = false;
 
         public static void Initialize(Game game, GraphicsDeviceManager graphics)
@@ -66,14 +66,15 @@ namespace AdelieEngine
 
             Engine.RenderTarget = new RenderTarget2D(game.GraphicsDevice, Engine.Width, Engine.Height, false, SurfaceFormat.Color, DepthFormat.None);
 
-            Engine.WhiteBox = new Texture2D(game.GraphicsDevice, 1, 1);
+            /*Engine.WhiteBox = new Texture2D(game.GraphicsDevice, 1, 1);
             Color[] data = new Color[1];
             data[0] = Color.White;
-            Engine.WhiteBox.SetData<Color>(data);
+            Engine.WhiteBox.SetData<Color>(data);*/
 
             Engine.Rectangle = new Rectangle(0, 0, Engine.Width, Engine.Height);
 
-            //Initialize Scene
+            //Initialize Managers
+            Graphic.GraphicManager.Initialize(game, graphics);
             Scene.SceneManager.Initialize(game, graphics);
         }
 
@@ -84,7 +85,7 @@ namespace AdelieEngine
 
         public static void UnloadContent(Game game, GraphicsDeviceManager graphics)
         {
-            Engine.WhiteBox.Dispose();
+            Graphic.GraphicManager.WhiteBox.Dispose();
             Scene.SceneManager.UnloadContent(game, graphics);
         }
 
